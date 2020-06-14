@@ -20,7 +20,9 @@ class Counter extends Component {
   }
 
   increment() {
-    this.setState(increment);
+    this.setState(increment, () => {
+      console.log('After!', this.state);
+    });
   }
 
   decrement() {
