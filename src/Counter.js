@@ -8,21 +8,30 @@ const increment = (state, props) => {
   return { count: state.count + step };
 };
 
+const getStateFromLocalStorage = () => {
+  const storage = localStorage.getItem('counterState');
+  if (storage) {
+    return JSON.parse(storage);
+  }
+  return { count: 0 };
+};
+
+const storeStateInLocalStorage = (state) => {
+  localStorage.setItem('counterState', JSON.stringify(state));
+  console.log(localStorage);
+};
+
 class Counter extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      count: 0,
-    };
+    this.state = getStateFromLocalStorage();
     this.increment = this.increment.bind(this);
     this.decrement = this.decrement.bind(this);
     this.reset = this.reset.bind(this);
   }
 
   increment() {
-    this.setState(increment, () => {
-      console.log('After!', this.state);
-    });
+    this.setState(increment, () => storeStateInLocalStorage(this.state));
   }
 
   decrement() {
