@@ -1,7 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+
+const getStateFromLocalStorage = () => {
+  const storage = localStorage.getItem('counterState');
+  if (storage) {
+    return JSON.parse(storage).count;
+  }
+  return 0;
+};
 
 const Counter = ({ max, step }) => {
-  const [count, setCount] = useState(0);
+  const [count, setCount] = useState(getStateFromLocalStorage());
 
   const increment = () => {
     setCount((c) => {
@@ -11,8 +19,16 @@ const Counter = ({ max, step }) => {
       return c + step;
     });
   };
-  const decrement = () => setCount(count - 1);
+  const decrement = () => setCount(count - step);
   const reset = () => setCount(0);
+
+  useEffect(() => {
+    document.title = `Counter: ${count}`;
+  }, [count]);
+
+  useEffect(() => {
+    localStorage.setItem('counterState', JSON.stringify({ count }));
+  }, [count]);
 
   return (
     <div className="Counter">
