@@ -19,7 +19,15 @@ const useLocalStorage = (initialState, key) => {
 };
 
 const Counter = ({ max, step }) => {
-  const [count, setCount] = useLocalStorage(0, 'count');
+  const [count, setCount] = useState(0);
+  const countRef = React.useRef();
+
+  let message = '';
+
+  if (countRef.current < count) message = 'Higher';
+  if (countRef.current > count) message = 'Lower';
+
+  countRef.current = count;
 
   const increment = () => {
     setCount((c) => {
@@ -33,12 +41,16 @@ const Counter = ({ max, step }) => {
   const reset = () => setCount(0);
 
   useEffect(() => {
-    document.title = `Counter: ${count}`;
+    const id = setInterval(() => {
+      console.log(`Count: ${count}`);
+    }, 3000);
+    return () => clearInterval(id);
   }, [count]);
 
   return (
     <div className="Counter">
       <p className="count">{count}</p>
+      <p>{message}</p>
       <section className="controls">
         <button onClick={increment}>Increment</button>
         <button onClick={decrement}>Decrement</button>
